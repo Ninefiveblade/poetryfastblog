@@ -1,89 +1,51 @@
 """Тестирование"""
-from enum import Enum
-from typing import Optional, List
+from fastapi import Depends, FastAPI
+from sqlalchemy.orm import Session
 
-from fastapi import FastAPI, Query
-from pydantic import BaseModel
+from fastpoet import crud, models, schemas
+from database import SessionLocal, engine
 
-
-class Item(BaseModel):
-    title: str
-    group: str
-    author: int
-    text: Optional[str] = None
-
-
-class ModelName(str, Enum):
-    alexnet = "alexnet"
-    resnet = "resnet"
-    lenet = "lenet"
-
+models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
-db = [{"item_name": "Foo"}, {"item_name": "Bar"}, {"item_name": "Baz"}]
+
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
 
-@app.get("/items/")
-async def read_items(
-    q: Optional[List[int]] = Query(None)
+@app.post("/users/", response_model=schemas.User)
+def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
+    return crud.create_user(db=db, user=user)
+
+
+@app.get("/users/", response_model=list[schemas.User])
+def users_get(db: Session = Depends(get_db)):
+    users = crud.get_users(db)
+    return users
+
+
+@app.get("/users/{user_id}", response_model=schemas.User)
+def user_get(user_id: int, db: Session = Depends(get_db)):
+    users = crud.get_user(db, user_id)
+    return users
+
+
+@app.get("/posts/", response_model=list[schemas.Post])
+def posts_get(db: Session = Depends(get_db)):
+    posts = crud.get_posts(db)
+    return posts
+
+
+@app.post("/posts/", response_model=schemas.Post)
+def posts_create(
+    user_id: int,
+    post: schemas.PostCreate,
+    db: Session = Depends(get_db)
 ):
-    results = {"items": [{"item_id": "Foo"}, {"item_id": "Bar"}]}
-    if q:
-        results.update({"q": q})
-    return results
-
-
-@app.get("/")
-async def index(skip: int = 0, limit: int = 10):
-    return db[skip: skip + limit]
-
-
-@app.get("/{post_id}/")
-async def post(post_id: int):
-    return {"post_id": post_id}
-
-
-@app.get("/users/me")
-async def read_user_me():
-    return {"user_id": "the current user"}
-
-
-@app.get("/users/{user_id}")
-async def read_user(user_id: int):
-    return {"user_id": user_id}
-
-
-@app.get("/models/{model_name}")
-async def get_model(model_name: ModelName):
-    if model_name == ModelName.alexnet:
-        return {"model_name": model_name, "message": "Deep Learning FTW!"}
-
-    if model_name.value == "lenet":
-        return {"model_name": model_name, "message": "LeCNN all the images"}
-
-    return {"model_name": model_name, "message": "Have some residuals"}
-
-
-@app.get("/posters/{item_id}")
-async def read_item(
-    item_id: str, q: Optional[str] = None, short: bool = False
-):
-    item = {"item_id": item_id}
-    if q:
-        item.update({"q": q})
-    if not short:
-        item.update(
-            {
-                "description": (
-                    "This is an amazing item that has a long description"
-                )
-            }
-        )
-    return item
-
-
-@app.post("/posts/")
-def post_create(item: Item):
-    print(item.dict())
-    return item
+    posts = crud.create_post(db, post, user_id)
+    return posts
