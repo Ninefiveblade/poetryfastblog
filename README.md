@@ -1,4 +1,4 @@
-# Проект написан c помощью Poetry
+# Проект написан на FastApi и помощью Poetry
 
 Установить Poetry:
 ```
@@ -7,15 +7,15 @@ $ curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-po
 
 Установить зависимости:
 ```
-poetry install
+$ poetry install
 ```
 
 Использовать Poetry в vscode:
 ```
-poetry shell code .
+$ poetry shell code .
 ```
 
 Запуск проекта:
 ```
-poetry run uvicorn fastpoet.main:app --reload
+$ poetry run uvicorn fastpoet.main:app --reload
 ```
