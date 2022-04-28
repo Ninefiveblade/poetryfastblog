@@ -1,19 +1,21 @@
-### Проект написан c помощью Poetry ###
+# Проект написан c помощью Poetry
 
-Установка OS Poetry:
+Установить Poetry:
+```
+$ curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python3 -
+```
 
-```curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python -```
+Установить зависимости:
+```
+poetry install
+```
 
-### Установка зависимостей: ###
+Использовать Poetry в vscode:
+```
+poetry shell code .
+```
 
-```poetry install```
-
-### Использование в vscode ###
-```poetry shell```
-```code .```
-
-### Запуск проекта: ###
-
-```poetry shell```
-```cd fastpoet```
-```uvicorn main:app --reload```
+Запуск проекта:
+```
+poetry run uvicorn fastpoet.main:app --reload
+```
