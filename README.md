@@ -19,3 +19,6 @@ $ poetry shell code .
 ```
 $ poetry run uvicorn fastpoet.main:app --reload
 ```
+Документация по api:
+
+```http://127.0.0.1:8000/redoc/```
