@@ -349,11 +349,7 @@ python-versions = "*"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-<<<<<<< HEAD
-content-hash = "783c2b2393e6cf8bbfd6d354003518665bd6b1f5663f316e7c40019eadafd4cd"
-=======
 content-hash = "be2b2912cc0ca0007a4c1846cea8047bd4676fc785a117f7d413e951ecff4f8d"
->>>>>>> refs/remotes/origin/main
 
 [metadata.files]
 anyio = [
