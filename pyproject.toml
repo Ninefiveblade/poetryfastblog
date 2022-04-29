@@ -9,6 +9,7 @@ python = "^3.9"
 fastapi = {extras = ["all"], version = "^0.75.2"}
 flake8 = "^4.0.1"
 autoflake = "^1.4"
+SQLAlchemy = "^1.4.36"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
