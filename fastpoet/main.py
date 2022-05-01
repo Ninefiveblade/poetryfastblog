@@ -9,7 +9,7 @@ models.Base.metadata.create_all(bind=engine)
 
 
 def create_app():
-    """"""
+    """Application Initialization"""
     app = FastAPI()
     return app
 
