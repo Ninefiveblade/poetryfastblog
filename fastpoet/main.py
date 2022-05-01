@@ -3,12 +3,15 @@ from fastapi import Depends, FastAPI
 from sqlalchemy.orm import Session
 
 from fastpoet import crud, models, schemas
-
-from .database import SessionLocal, engine
+from fastpoet.database import SessionLocal, engine
 
 models.Base.metadata.create_all(bind=engine)
 
-app = FastAPI()
+
+def create_app():
+    """"""
+    app = FastAPI()
+    return app
 
 
 def get_db():
@@ -17,6 +20,9 @@ def get_db():
         yield db
     finally:
         db.close()
+
+
+app = create_app()
 
 
 @app.post("/users/", response_model=schemas.User)
