@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 
 from fastpoet import crud, models, schemas
 from fastpoet.database import SessionLocal, engine
+from fastpoet.routers import router
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -11,6 +12,7 @@ models.Base.metadata.create_all(bind=engine)
 def create_app():
     """Application Initialization"""
     app = FastAPI()
+    app.include_router(router)
     return app
 
 
