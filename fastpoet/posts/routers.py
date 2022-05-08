@@ -1,12 +1,12 @@
 """Routing module for posts"""
-from fastapi import APIRouter
-from fastapi import Depends
+from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
 from fastpoet.settings import models
-from . import service, schemas
-
 from fastpoet.settings.database import SessionLocal, engine
+
+from .schemas import Post, PostCreate
+from .service import create_post, get_posts
 
 router = APIRouter()
 
@@ -21,17 +21,17 @@ def get_db():
         db.close()
 
 
-@router.get("/posts/", response_model=list[schemas.Post])
+@router.get("/posts/", response_model=list[Post])
 def posts_get(db: Session = Depends(get_db)):
-    posts = service.get_posts(db)
+    posts = get_posts(db)
     return posts
 
 
-@router.post("/posts/", response_model=schemas.Post)
+@router.post("/posts/", response_model=Post)
 def posts_create(
     user_id: int,
-    post: schemas.PostCreate,
+    post: PostCreate,
     db: Session = Depends(get_db)
 ):
-    posts = service.create_post(db, post, user_id)
+    posts = create_post(db, post, user_id)
     return posts
