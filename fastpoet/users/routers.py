@@ -6,7 +6,7 @@ from fastpoet.settings import models
 from fastpoet.settings.database import SessionLocal, engine
 
 from .schemas import User, UserCreate
-from .service import create_user, get_user, get_users
+from .service import add_user, get_user, get_users
 
 router = APIRouter()
 
@@ -21,11 +21,6 @@ def get_db():
         db.close()
 
 
-@router.post("/users/", response_model=User)
-def create_user(user: UserCreate, db: Session = Depends(get_db)):
-    return create_user(db=db, user=user)
-
-
 @router.get("/users/", response_model=list[User])
 def users_get(db: Session = Depends(get_db)):
     users = get_users(db)
@@ -36,3 +31,9 @@ def users_get(db: Session = Depends(get_db)):
 def user_get(user_id: int, db: Session = Depends(get_db)):
     users = get_user(db, user_id)
     return users
+
+
+@router.post("/users/", response_model=User)
+def create_user(user: UserCreate, db: Session = Depends(get_db)):
+    """Create new user"""
+    return add_user(db=db, user=user)
