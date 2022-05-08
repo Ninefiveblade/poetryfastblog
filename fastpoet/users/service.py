@@ -2,8 +2,9 @@
 
 from sqlalchemy.orm import Session
 
-from . import schemas
 from fastpoet.settings import models
+
+from .schemas import UserCreate
 
 
 def get_user(db: Session, user_id: int):
@@ -21,7 +22,7 @@ def get_users(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.User).offset(skip).limit(limit).all()
 
 
-def create_user(db: Session, user: schemas.UserCreate):
+def create_user(db: Session, user: UserCreate):
     # тут видимо будет защита паролей.
     fake_hashed_password = user.password + "notreallyhashed"
     db_user = models.User(

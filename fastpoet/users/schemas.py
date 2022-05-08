@@ -1,7 +1,8 @@
 """Schemas module for users"""
 
-from pydantic import BaseModel
 from typing import List
+
+from pydantic import BaseModel
 
 from fastpoet.posts.schemas import Post
 
