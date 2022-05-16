@@ -3,22 +3,15 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
 from fastpoet.settings import models
-from fastpoet.settings.database import SessionLocal, engine
+from fastpoet.settings.database import engine
 
 from .schemas import Post, PostCreate
 from .service import create_post, get_posts
-
-router = APIRouter()
+from fastpoet.settings.database import get_db
 
 models.Base.metadata.create_all(bind=engine)
 
-
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
+router = APIRouter()
 
 
 @router.get("/posts/", response_model=list[Post])
