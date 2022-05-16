@@ -1,11 +1,12 @@
 """Routing module for users"""
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from fastapi.security import OAuth2PasswordBearer
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 
 from fastpoet.settings.database import engine
-from .schemas import User, UserCreate
-from .service import add_user, get_user, get_users
+from .schemas import User, UserCreate, UserInDB
+from .service import add_user, get_user, get_users, get_user_by_username
+from .security import get_password_hash
 from fastpoet.settings.database import get_db
 from fastpoet.settings import models
 
@@ -37,3 +38,24 @@ def create_user(user: UserCreate, db: Session = Depends(get_db)):
 @router.get("/test/")
 def get_token(token: str = Depends(OAuth2PasswordBearer(tokenUrl="token"))):
     return {"token": token}
+
+
+@router.post("/token")
+#  доделать
+def login(
+    form_data: OAuth2PasswordRequestForm = Depends(),
+    db: Session = Depends(get_db)
+):
+    user = get_user_by_username(db, form_data.username)
+    print(user)
+    if not user:
+        raise HTTPException(
+            status_code=400, detail="Incorrect username or password"
+        )
+    user = UserInDB(**user.__dict__)
+    hashed_password = get_password_hash(form_data.password)
+    if not hashed_password == user.hashed_password:
+        raise HTTPException(
+            status_code=400, detail="Incorrect username or password"
+        )
+    return {"access_token": user.username, "token_type": "bearer"}
