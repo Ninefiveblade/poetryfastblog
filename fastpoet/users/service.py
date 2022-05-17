@@ -2,14 +2,16 @@
 from datetime import datetime, timedelta
 from typing import Union
 
+from fastapi import Depends, HTTPException, status
+from jose import JWTError, jwt
 from sqlalchemy.orm import Session
-from jose import jwt, JWTError
-from fastapi import HTTPException, Depends, status
 
-from fastpoet.settings.models import User
 from fastpoet.settings import security_config
-from .schemas import UserCreate, UserInDB, TokenData
-from .security import get_password_hash, verify_password, oauth2_scheme
+from fastpoet.settings.models import User
+
+from .schemas import TokenData, UserCreate
+from .security import get_password_hash, oauth2_scheme, verify_password
+
 
 def add_user(db: Session, user: UserCreate):
     db_user = User(
@@ -34,24 +36,20 @@ def get_users(db: Session, skip: int = 0, limit: int = 100):
     return db.query(User).offset(skip).limit(limit).all()
 
 
-def get_user_token(db: Session, username: str): # получаем юзера
-    '''Для токена.'''
-    user = db.query(User).filter(User.username == username).first()
-    if user:
-        user_dict = user.__dict__
-        return UserInDB(**user_dict)
-
-
-def authenticate_user(db: Session, username: str, password: str): # "авторизируем" пользователя
-    user = get_user_token(db, username)
+def authenticate_user(db: Session, username: str, password: str) -> User:
+    """Функция проверяет аутентифицию пользователя"""
+    user = get_user_by_username(db, username)
     if not user:
-        return False
-    if not verify_password(password, user.hashed_password): # проверяем пароли
-        return False
+        return
+    if not verify_password(password, user.hashed_password):
+        return
     return user
 
 
-def create_access_token(data: dict, expires_delta: Union[timedelta, None] = None): # создаем токен
+def create_access_token(
+    data: dict, expires_delta: Union[timedelta, None] = None
+):
+    """Функция создаёт токен"""
     to_encode = data.copy()
     if expires_delta:
         expire = datetime.utcnow() + expires_delta
@@ -65,10 +63,7 @@ def create_access_token(data: dict, expires_delta: Union[timedelta, None] = None
     return encoded_jwt
 
 
-def get_current_user( # проверим токен юзера, пока не юзается
-    db: Session,
-    token: str = Depends(oauth2_scheme)
-):
+def get_current_user(db: Session, token: str = Depends(oauth2_scheme)):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
@@ -85,7 +80,7 @@ def get_current_user( # проверим токен юзера, пока не ю
         token_data = TokenData(username=username)
     except JWTError:
         raise credentials_exception
-    user = get_user_token(db, username=token_data.username)
+    user = get_user_by_username(db, username=token_data.username)
     if user is None:
         raise credentials_exception
     return user
