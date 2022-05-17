@@ -7,7 +7,7 @@ from fastpoet.settings.database import engine
 
 from .schemas import Post, PostCreate
 from .service import create_post, get_posts
-from settings.database import get_db
+from fastpoet.settings.database import get_db
 
 router = APIRouter()
 
