@@ -1,5 +1,5 @@
 """Schemas module for users"""
-from typing import List, Optional
+from typing import List, Optional, Union
 
 from pydantic import BaseModel
 
@@ -28,3 +28,17 @@ class UserInDB(UserBaseInDB):
 
 class User(UserBaseInDB):
     pass
+
+
+class UserToken(UserBase):
+    username: str
+    password: str
+
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
+
+class TokenData(BaseModel):
+    username: Union[str, None] = None
