@@ -1,5 +1,6 @@
 """Routing module for users"""
 from datetime import timedelta
+from typing import List
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
@@ -17,29 +18,27 @@ router = APIRouter()
 models.Base.metadata.create_all(bind=engine)
 
 
-@router.get("/users/", response_model=list[User])
-def users_get(db: Session = Depends(get_db)):
+@router.get("/users/", response_model=List[User])
+def users_get(db: Session = Depends(get_db)) -> List[User]:
     """Get users"""
-    users = get_users(db)
-    return users
+    return get_users(db)
 
 
 @router.get("/users/{user_id}", response_model=User)
-def user_get(user_id: int, db: Session = Depends(get_db)):
+def user_get(user_id: int, db: Session = Depends(get_db)) -> User:
     """Get user by id"""
-    user = get_user(db, user_id)
-    return user
+    return get_user(db, user_id)
 
 
 @router.post("/users/", response_model=User)
-def create_user(user: UserCreate, db: Session = Depends(get_db)):
+def create_user(user: UserCreate, db: Session = Depends(get_db)) -> User:
     """Create new user"""
     if get_user_by_username(db, user.username):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="User with this username already exist",
         )
-    return add_user(db=db, user=user)
+    return add_user(db, user)
 
 
 @router.get("/test/")
