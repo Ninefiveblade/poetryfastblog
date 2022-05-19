@@ -9,9 +9,9 @@ from .schemas import Post, PostCreate
 from .service import create_post, get_posts
 from fastpoet.settings.database import get_db
 
-models.Base.metadata.create_all(bind=engine)
-
 router = APIRouter()
+
+models.Base.metadata.create_all(bind=engine)
 
 
 @router.get("/posts/", response_model=list[Post])
