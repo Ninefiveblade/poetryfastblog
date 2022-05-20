@@ -4,7 +4,6 @@ from typing import List
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 
 from fastpoet.settings import models, security_config
 from fastpoet.settings.database import engine, get_db
