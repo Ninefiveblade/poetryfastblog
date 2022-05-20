@@ -1,21 +1,19 @@
 """Schemas module for posts"""
-from typing import Optional
-
 from pydantic import BaseModel
 
 
 class PostBase(BaseModel):
-    title: Optional[str] = None
-    text: Optional[str] = None
-
-
-class PostCreate(PostBase):
-    pass
-
-
-class Post(PostBase):
-    id: int
-    author_id: int
+    id: int = None
 
     class Config:
         orm_mode = True
+
+
+class PostCreate(PostBase):
+    title: str
+    text: str
+    author_id: int
+
+
+class PostList(PostCreate):
+    pass
