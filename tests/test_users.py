@@ -1,4 +1,3 @@
-from urllib import response
 from fastapi import status
 from fastapi.testclient import TestClient
 
