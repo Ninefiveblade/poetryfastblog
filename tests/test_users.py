@@ -17,3 +17,14 @@ class TestUrlUserAPI:
         """Получить пользователя по id"""
         response = client.get("/users/1/")
         assert response.status_code == status.HTTP_200_OK
+
+
+class TestCreateUser:
+
+    def test_user_post(self):
+        """Создать нового пользователя"""
+        response = client.post(
+            "/users/",
+            json={"username": "usertest", "password": "12345"},
+        )
+        assert response.status_code == status.HTTP_200_OK
