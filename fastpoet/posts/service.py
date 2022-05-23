@@ -1,7 +1,7 @@
 """CRUD module for posts"""
 from sqlalchemy.orm import Session
 
-from fastpoet.settings.models import Post
+from .models import Post
 
 from .schemas import PostCreate
 

@@ -5,7 +5,8 @@ from typing import List
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
-from fastpoet.settings import models, security_config
+from fastpoet.settings import security_config
+from .models import User as user_model
 from fastpoet.settings.database import engine, get_db
 
 from .schemas import Token, User, UserCreate, UserToken
@@ -15,7 +16,7 @@ from .service import (add_user, authenticate_user, create_access_token,
 
 router = APIRouter()
 
-models.Base.metadata.create_all(bind=engine)
+user_model.metadata.create_all(bind=engine)
 
 
 @router.get("/users/", response_model=List[User])
