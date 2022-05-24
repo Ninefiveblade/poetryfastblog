@@ -2,7 +2,6 @@
 from sqlalchemy.orm import Session
 
 from .models import Post
-
 from .schemas import PostCreate
 
 

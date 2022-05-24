@@ -2,9 +2,9 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
-from .models import Post
 from fastpoet.settings.database import engine, get_db
 
+from .models import Post
 from .schemas import PostCreate, PostList
 from .service import create_post, get_posts
 
