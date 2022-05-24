@@ -1,6 +1,6 @@
 # Проект написан на FastApi с помощью Poetry
 
-Установить Poetry:
+Установить [Poetry](https://python-poetry.org/):
 ```
 $ curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python3 -
 ```
