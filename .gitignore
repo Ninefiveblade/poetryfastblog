@@ -130,3 +130,5 @@ dmypy.json
 
 .DS_Store
 db.sqlite3
+
+.idea
