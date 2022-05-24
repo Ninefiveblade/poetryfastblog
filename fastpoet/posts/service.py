@@ -1,16 +1,37 @@
 """CRUD module for posts"""
 from sqlalchemy.orm import Session
 
-from .models import Post
-from .schemas import PostCreate
+from .models import Category, Genre, Title
+from .schemas import CategoriesCreate, GenresCreate, TitlesCreate
 
 
-def get_posts(db: Session):
-    return db.query(Post).all()
+def get_categories(db: Session):
+    return db.query(Category).all()
+
+def get_genres(db: Session):
+    return db.query(Genre).all()
+
+def get_titles(db: Session):
+    return db.query(Title).all()
 
 
-def create_post(db: Session, item: PostCreate):
-    db_item = Post(**item.dict())
+def create_categories(db: Session, item: CategoriesCreate):
+    db_item = Category(**item.dict())
+    db.add(db_item)
+    db.commit()
+    db.refresh(db_item)
+    return db_item
+
+
+def create_genres(db: Session, item: GenresCreate):
+    db_item = Genre(**item.dict())
+    db.add(db_item)
+    db.commit()
+    db.refresh(db_item)
+    return db_item
+
+def create_titles(db: Session, item: TitlesCreate):
+    db_item = Title(**item.dict())
     db.add(db_item)
     db.commit()
     db.refresh(db_item)

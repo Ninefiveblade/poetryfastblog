@@ -3,7 +3,7 @@ from typing import List, Optional, Union
 
 from pydantic import BaseModel
 
-from fastpoet.posts.schemas import PostList
+from fastpoet.posts.schemas import CategoriesList
 
 
 class UserBase(BaseModel):
@@ -15,7 +15,7 @@ class UserBase(BaseModel):
 
 class UserBaseInDB(UserBase):
     username: Optional[str] = None
-    posts: List[PostList] = []
+    posts: List[CategoriesList] = []
 
 
 class UserCreate(UserBaseInDB):
