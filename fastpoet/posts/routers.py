@@ -55,5 +55,5 @@ def titles_get(db: Session = Depends(get_db)):
 @router.post("/titles/", response_model=TitlesCreate)
 def titles_create(titles: TitlesCreate, db: Session = Depends(get_db)):
     """Create new category"""
-    titles = create_titles(db, genre)
+    titles = create_titles(db, titles)
     return titles
