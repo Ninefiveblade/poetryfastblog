@@ -7,8 +7,8 @@ from jose import JWTError, jwt
 from sqlalchemy.orm import Session
 
 from fastpoet.settings import security_config
-from .models import User
 
+from .models import User
 from .schemas import TokenData, UserCreate
 from .security import get_password_hash, oauth2_scheme, verify_password
 
