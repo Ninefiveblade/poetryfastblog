@@ -16,8 +16,11 @@ $ poetry shell code .
 ```
 Запуск миграций
 
-```poetry run alembic revision --autogenerate -m "Add DB"
-   poetry run alembic upgrade head
+```
+$ poetry run alembic revision --autogenerate -m "Add DB"
+```
+```
+$ poetry run alembic upgrade head
 ```
 Запуск проекта:
 ```
