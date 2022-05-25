@@ -2,7 +2,7 @@
 name = "fastpoet"
 version = "0.1.0"
 description = ""
-authors = ["Иван Алексеев <seevvia@gmail.com>"]
+authors = ["Иван Алексеев <seevvia@gmail.com>", "Aleksey Otto", "Lina Ruin", "Denis Shvetsov"]
 
 [tool.poetry.dependencies]
 python = "^3.9"
