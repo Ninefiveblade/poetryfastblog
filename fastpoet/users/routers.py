@@ -11,8 +11,8 @@ from fastpoet.settings.database import engine, get_db
 from .models import User as user_model
 from .schemas import Token, User, UserCreate, UserToken
 from .security import oauth2_scheme
-from .service import (add_user, authenticate_user, create_access_token, get_current_user,
-                      get_user, get_user_by_username, get_users)
+from .service import (add_user, authenticate_user, create_access_token,
+                      get_current_user, get_user_by_username, get_users)
 
 router = APIRouter()
 
@@ -70,7 +70,9 @@ def get_token_for_user(form_data: UserToken, db: Session = Depends(get_db)):
 
 
 @router.get("/items/{item_id}")
-def read_root(item_id: str, request: Request, token: str = Depends(oauth2_scheme), db: Session=Depends(get_db)):
+def read_root(item_id: str, request: Request,
+              token: str = Depends(oauth2_scheme),
+              db: Session = Depends(get_db)):
     print(token)
     get_current_user(db, token)
     client_host = request.user

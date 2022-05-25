@@ -1,7 +1,6 @@
 """Dependensies and CRUD for users."""
 from datetime import datetime, timedelta
 from typing import Union
-from urllib.request import Request
 
 from fastapi import Depends, HTTPException, status
 from jose import JWTError, jwt
@@ -68,7 +67,7 @@ def create_access_token(
 
 
 def get_current_user(db: Session, token: str = Depends(oauth2_scheme)):
-    """Get user by token and check""" 
+    """Get user by token and check"""
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",

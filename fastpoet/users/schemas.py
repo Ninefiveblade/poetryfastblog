@@ -45,7 +45,7 @@ class User(UserBaseInDB):
 
 class UserToken(UserBase):
     """POST token create form.
-    expands UserBase 
+    expands UserBase
     have a fields an id, username, pass."""
     username: str
     password: str
