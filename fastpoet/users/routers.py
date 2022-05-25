@@ -2,16 +2,21 @@
 from datetime import timedelta
 from typing import List
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Request
 from sqlalchemy.orm import Session
 
 from fastpoet.settings import security_config
 from fastpoet.settings.database import engine, get_db
 
 from .models import User as user_model
-from .schemas import Token, User, UserCreate, UserToken
+from .schemas import (
+    Token,
+    User,
+    UserCreate,
+    UserToken
+)
 from .security import oauth2_scheme
-from .service import (add_user, authenticate_user, create_access_token,
+from .service import (add_user, authenticate_user, create_access_token, get_current_user,
                       get_user, get_user_by_username, get_users)
 
 router = APIRouter()
@@ -25,13 +30,13 @@ def users_get(db: Session = Depends(get_db)) -> List[User]:
     return get_users(db)
 
 
-@router.get("/users/{user_id}", response_model=User)
-def user_get(user_id: int, db: Session = Depends(get_db)) -> User:
-    """Get user by id"""
-    return get_user(db, user_id)
+@router.get("/users/{username}", response_model=User)
+def user_get(username: str, db: Session = Depends(get_db)) -> User:
+    """Get user by username"""
+    return get_user_by_username(db, username)
 
 
-@router.post("/users/", response_model=User)
+@router.post("/auth/signup/", response_model=User)
 def create_user(user: UserCreate, db: Session = Depends(get_db)) -> User:
     """Create new user."""
     if get_user_by_username(db, user.username):
@@ -42,12 +47,7 @@ def create_user(user: UserCreate, db: Session = Depends(get_db)) -> User:
     return add_user(db, user)
 
 
-@router.get("/test/")
-async def read_items(token: str = Depends(oauth2_scheme)):
-    return {"auth": "если ты видишь это, то ты залогинен!"}
-
-
-@router.post("/token/", response_model=Token)
+@router.post("/auth/token/", response_model=Token)
 def get_token_for_user(form_data: UserToken, db: Session = Depends(get_db)):
     """Получение токена"""
     user = get_user_by_username(db, form_data.username)
@@ -72,3 +72,12 @@ def get_token_for_user(form_data: UserToken, db: Session = Depends(get_db)):
         data={"sub": user.username}, expires_delta=access_token_expires
     )
     return {"access_token": access_token, "token_type": "bearer"}
+
+
+@router.get("/items/{item_id}")
+def read_root(item_id: str, request: Request, token: str = Depends(oauth2_scheme), db: Session=Depends(get_db)):
+    print(token)
+    get_current_user(db, token)
+    client_host = request.user
+    print(client_host)
+    return {"client_host": client_host, "item_id": item_id}
