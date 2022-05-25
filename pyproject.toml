@@ -11,6 +11,8 @@ fastapi = "^0.75.2"
 uvicorn = "^0.17.6"
 passlib = "^1.7.4"
 python-jose = "^3.3.0"
+fastapi_auth_middleware = "^1.0.2"
+alembic = "^1.7.7"
 
 [tool.poetry.dev-dependencies]
 isort = "^5.10.1"

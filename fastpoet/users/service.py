@@ -1,19 +1,20 @@
-"""CRUD module for users"""
+"""Dependensies and CRUD for users."""
 from datetime import datetime, timedelta
 from typing import Union
+from urllib.request import Request
 
 from fastapi import Depends, HTTPException, status
 from jose import JWTError, jwt
 from sqlalchemy.orm import Session
 
 from fastpoet.settings import security_config
-
 from .models import User
 from .schemas import TokenData, UserCreate
 from .security import get_password_hash, oauth2_scheme, verify_password
 
 
 def add_user(db: Session, user: UserCreate):
+    """Add new user to db"""
     db_user = User(
         username=user.username,
         hashed_password=get_password_hash(user.password),
@@ -25,19 +26,22 @@ def add_user(db: Session, user: UserCreate):
 
 
 def get_user(db: Session, user_id: int):
+    """Grab user from db by id"""
     return db.query(User).filter(User.id == user_id).first()
 
 
 def get_user_by_username(db: Session, username: str):
+    """Grab user from db by username"""
     return db.query(User).filter(User.username == username).first()
 
 
 def get_users(db: Session, skip: int = 0, limit: int = 100):
+    """Get users set"""
     return db.query(User).offset(skip).limit(limit).all()
 
 
 def authenticate_user(db: Session, username: str, password: str) -> User:
-    """Функция проверяет аутентифицию пользователя"""
+    """Check user authentication"""
     user = get_user_by_username(db, username)
     if not user:
         return
@@ -49,7 +53,7 @@ def authenticate_user(db: Session, username: str, password: str) -> User:
 def create_access_token(
     data: dict, expires_delta: Union[timedelta, None] = None
 ):
-    """Функция создаёт токен"""
+    """Create a token for user"""
     to_encode = data.copy()
     if expires_delta:
         expire = datetime.utcnow() + expires_delta
@@ -64,6 +68,7 @@ def create_access_token(
 
 
 def get_current_user(db: Session, token: str = Depends(oauth2_scheme)):
+    """Get user by token and check""" 
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
