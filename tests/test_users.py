@@ -1,7 +1,7 @@
 from fastapi import status
 from fastapi.testclient import TestClient
 
-from fastpoet.main import app
+from .test_sql_app import app
 
 client = TestClient(app)
 
