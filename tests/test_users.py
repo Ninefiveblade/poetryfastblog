@@ -1,7 +1,7 @@
 from fastapi import status
 from fastapi.testclient import TestClient
 
-from .test_sql_app import app
+from .conftest import app
 
 client = TestClient(app)
 
