@@ -1,9 +1,8 @@
-from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from fastpoet.settings.database import Base
-from fastpoet.main import app, get_db
+from fastpoet.settings.database import Base, get_db
+from fastpoet.main import app
 
 SQLALCHEMY_DATABASE_URL = "sqlite:///./db.test"
 
