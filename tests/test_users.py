@@ -37,6 +37,13 @@ app.dependency_overrides[get_db] = override_get_db
 client = TestClient(app)
 
 
+def test_users_enpoinds_active(test_db):
+    response = client.get(
+        "/users/",
+    )
+    assert response.status_code == 200, response.text
+
+
 def test_crud_user(test_db):
     response = client.post(
         "/auth/signup/",
