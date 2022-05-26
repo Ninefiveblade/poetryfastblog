@@ -2,7 +2,7 @@
 from fastapi.security import OAuth2PasswordBearer
 from passlib.context import CryptContext
 
-#  pwd hash password by bcrypt 
+#  pwd hash password by bcrypt
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 #  check a token availability on user

@@ -6,6 +6,10 @@ from pydantic import BaseModel
 from fastpoet.posts.schemas import PostList
 
 
+class AnonimousUser(BaseModel):
+    username: str
+
+
 class UserBase(BaseModel):
     """Base user pydantic model."""
     id: int = None

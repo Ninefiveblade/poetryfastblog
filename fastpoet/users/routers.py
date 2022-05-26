@@ -2,16 +2,15 @@
 from datetime import timedelta
 from typing import List
 
-from fastapi import APIRouter, Depends, HTTPException, status, Request
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from fastpoet.settings import security_config
 from fastpoet.settings.database import engine, get_db
 from .models import User as user_model
 from .schemas import Token, User, UserCreate, UserToken
-from .security import oauth2_scheme
 from .service import (add_user, authenticate_user, create_access_token,
-                      get_current_user, get_user_by_username, get_users)
+                      get_user_by_username, get_users)
 
 router = APIRouter()
 
@@ -66,14 +65,3 @@ def get_token_for_user(form_data: UserToken, db: Session = Depends(get_db)):
         data={"sub": user.username}, expires_delta=access_token_expires
     )
     return {"access_token": access_token, "token_type": "bearer"}
-
-
-@router.get("/items/{item_id}")
-def read_root(item_id: str, request: Request,
-              token: str = Depends(oauth2_scheme),
-              db: Session = Depends(get_db)):
-    print(token)
-    get_current_user(db, token)
-    client_host = request.user
-    print(client_host)
-    return {"client_host": client_host, "item_id": item_id}
