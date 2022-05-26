@@ -1,9 +1,5 @@
 """Schemas module for posts"""
-from typing import List
-
 from pydantic import BaseModel
-
-from ..groups.schemas import GroupList
 
 
 class PostBase(BaseModel):
@@ -11,10 +7,6 @@ class PostBase(BaseModel):
 
     class Config:
         orm_mode = True
-
-
-# class PostBaseInDB(PostBase):
-#     group: List[GroupList] = []
 
 
 class PostCreate(PostBase):
