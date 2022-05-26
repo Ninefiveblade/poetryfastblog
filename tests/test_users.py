@@ -23,9 +23,22 @@ class TestCreateUser:
 
     def test_user_post(self):
         """Создать нового пользователя."""
+        user = {
+            "username": "usertest",
+            "password": "12345"
+        }
         response = client.post(
             "/users/",
-            json={"username": "usertest", "password": "12345"},
+            json={**user},
         )
         assert response.status_code == status.HTTP_200_OK
         assert response.json()["username"] == "usertest"
+        duplicate_user = {
+            "username": "usertest",
+            "password": "12345"
+        }
+        response = client.post(
+            "/users/",
+            json={**duplicate_user},
+        )
+        assert response.status_code == status.HTTP_400_BAD_REQUEST

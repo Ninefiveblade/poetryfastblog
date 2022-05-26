@@ -1,8 +1,8 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from fastpoet.settings.database import Base, get_db
 from fastpoet.main import app
+from fastpoet.settings.database import Base, get_db
 
 SQLALCHEMY_DATABASE_URL = "sqlite:///:memory:"
 
@@ -13,6 +13,7 @@ engine = create_engine(
 TestingSessionLocal = sessionmaker(
     autocommit=False, autoflush=False, bind=engine
 )
+
 
 def override_get_db():
     Base.metadata.create_all(bind=engine)
