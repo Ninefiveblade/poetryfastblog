@@ -12,7 +12,7 @@ class GroupBase(BaseModel):
 class GroupCreate(GroupBase):
     title: str
     slug: str
-    description: str
+    description: str = None
 
 
 class GroupList(GroupCreate):
