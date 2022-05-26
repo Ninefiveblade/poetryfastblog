@@ -1,8 +1,9 @@
-"""Models module for posts"""
+"""Models module for posts."""
 from sqlalchemy import Column, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
 from fastpoet.users.models import User
+from fastpoet.groups.models import Group
 from fastpoet.settings.database import Base
 
 
@@ -14,5 +15,7 @@ class Post(Base):
     title = Column(String, index=True)
     text = Column(String, index=True)
     author_id = Column(Integer, ForeignKey("users.id"))
+    group_id = Column(Integer, ForeignKey("groups.id"))
 
     author = relationship(User, back_populates="posts")
+    group = relationship(Group, back_populates="posts")

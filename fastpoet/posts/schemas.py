@@ -13,6 +13,7 @@ class PostCreate(PostBase):
     title: str
     text: str
     author_id: int
+    group_id: int = None
 
 
 class PostList(PostCreate):

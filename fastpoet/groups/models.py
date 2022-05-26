@@ -1,5 +1,6 @@
-"""Models module for groups"""
+"""Models module for groups."""
 from sqlalchemy import Column, Integer, String
+from sqlalchemy.orm import relationship
 
 from fastpoet.settings.database import Base
 
@@ -12,3 +13,6 @@ class Group(Base):
     title = Column(String, index=True)
     slug = Column(String, unique=True, index=True)
     description = Column(String, index=True)
+
+    posts = relationship("Post", back_populates="group")
+
