@@ -22,9 +22,10 @@ class TestUrlUserAPI:
 class TestCreateUser:
 
     def test_user_post(self):
-        """Создать нового пользователя"""
+        """Создать нового пользователя."""
         response = client.post(
             "/users/",
             json={"username": "usertest", "password": "12345"},
         )
         assert response.status_code == status.HTTP_200_OK
+        assert response.json()["username"] == "usertest"
