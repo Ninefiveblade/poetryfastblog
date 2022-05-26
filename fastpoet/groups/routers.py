@@ -25,3 +25,4 @@ def group_create(group: GroupCreate, db: Session = Depends(get_db)):
     """Create new group."""
     group = create_group(db, group)
     return group
+

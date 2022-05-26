@@ -15,4 +15,3 @@ class Group(Base):
     description = Column(String, index=True)
 
     posts = relationship("Post", back_populates="group")
-

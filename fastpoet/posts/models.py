@@ -15,7 +15,7 @@ class Post(Base):
     title = Column(String, index=True)
     text = Column(String, index=True)
     author_id = Column(Integer, ForeignKey("users.id"))
-    group_id = Column(Integer, ForeignKey("groups.id"))
+    group_id = Column(Integer, ForeignKey(Group.id))
 
     author = relationship(User, back_populates="posts")
     group = relationship(Group, back_populates="posts")
