@@ -1,9 +1,9 @@
 """Тестирование"""
 from fastapi import FastAPI
 
+from fastpoet.groups.routers import router as groups_router
 from fastpoet.posts.routers import router as posts_router
 from fastpoet.users.routers import router as users_router
-from fastpoet.groups.routers import router as groups_router
 
 
 def create_app():
