@@ -11,6 +11,12 @@ class User(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     username = Column(String, unique=True, index=True)
+    email = Column(String, unique=True)
+    first_name = Column(String, index=True)
+    last_name = Column(String, index=True)
+    born_year = Column(Integer, index=True, default=None)
     hashed_password = Column(String)
-    is_active = Column(Boolean, default=True)
-    posts = relationship("Post", back_populates="author")
+    is_active = Column(Boolean, default=False)
+    posts = relationship(
+        "Post", cascade="all, delete-orphan", back_populates="author"
+    )

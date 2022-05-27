@@ -16,6 +16,10 @@ def add_user(db: Session, user: UserCreate):
     """Add new user to db"""
     db_user = User(
         username=user.username,
+        email=user.email,
+        first_name=user.first_name,
+        last_name=user.last_name,
+        born_year=user.born_year,
         hashed_password=get_password_hash(user.password),
     )
     db.add(db_user)
@@ -32,6 +36,15 @@ def get_user(db: Session, user_id: int):
 def get_user_by_username(db: Session, username: str):
     """Grab user from db by username"""
     return db.query(User).filter(User.username == username).first()
+
+
+def destroy_user_by_username(
+    db: Session,
+    username: str,
+):
+    """Delete user"""
+    db.query(User).filter(User.username == username).delete()
+    db.commit()
 
 
 def get_users(db: Session, skip: int = 0, limit: int = 100):

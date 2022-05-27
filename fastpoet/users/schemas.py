@@ -1,13 +1,9 @@
 """Schemas module for users"""
-from typing import List, Optional, Union
+from typing import List, Union, Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from fastpoet.posts.schemas import PostList
-
-
-class AnonimousUser(BaseModel):
-    username: str
 
 
 class UserBase(BaseModel):
@@ -22,7 +18,10 @@ class UserBaseInDB(UserBase):
     """Expand UserBase, included posts set
     and username.
     """
-    username: Optional[str] = None
+    username: str = Field(
+        max_length=15,
+        regex="^[a-zA-Z][a-zA-Z0-9-_.]{1,20}$"
+    )
     posts: List[PostList] = []
 
 
@@ -30,7 +29,26 @@ class UserCreate(UserBaseInDB):
     """Expand UserBaseInDB, included posts set
     and username and password.
     """
-    password: str
+    email: str = Field(
+        description="Введите валидный Email",
+    )
+    first_name: str = Field(
+        description="Введите имя киррилицей.",
+        min_length=2,
+        max_length=84,
+        regex="^[\u0401\u0451\u0410-\u044f]"
+    )
+    last_name: Optional[str] = Field(
+        description="Введите фамилию киррилицей.",
+        min_length=2,
+        max_length=96,
+        regex="^[\u0401\u0451\u0410-\u044f]"
+    )
+    born_year: Optional[int] = None  # Добавить ограничения
+    password: str = Field(
+        description="Введите пароль не меньше 8 символов.",
+        regex="(?=^.{8,}$)((?=.*d)|(?=.*W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$"
+    )
 
 
 class UserInDB(UserBaseInDB):

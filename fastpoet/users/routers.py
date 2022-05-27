@@ -10,7 +10,9 @@ from fastpoet.settings.database import engine, get_db
 from .models import User as user_model
 from .schemas import Token, User, UserCreate, UserToken
 from .service import (add_user, authenticate_user, create_access_token,
-                      get_user_by_username, get_users)
+                      get_user_by_username, get_users,
+                      destroy_user_by_username)
+from .security import oauth2_scheme
 
 router = APIRouter()
 
@@ -26,7 +28,41 @@ def users_get(db: Session = Depends(get_db)) -> List[User]:
 @router.get("/users/{username}", response_model=User)
 def user_get(username: str, db: Session = Depends(get_db)) -> User:
     """Get user by username"""
-    return get_user_by_username(db, username)
+    user = get_user_by_username(db, username)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="User doesn't exist",
+        )
+    return user
+
+
+"""
+@router.patch("/users/{username}", response_model=User)
+def user_edit(
+    user: User,
+    db: Session = Depends(get_db),
+    token: str = Depends(oauth2_scheme),
+):
+    username = user.username
+    return {"info": f"User {username} has been successfully updated"}
+"""
+
+
+@router.delete("/users/{username}")
+def user_destroy(
+    username: str,
+    db: Session = Depends(get_db),
+    token: str = Depends(oauth2_scheme)
+):
+    """Delete user by username"""
+    if not get_user_by_username(db, username):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="User doesn't exist",
+        )
+    destroy_user_by_username(db, username)
+    return {"info": f"User with username: {username} has been deleted."}
 
 
 @router.post("/auth/signup/", response_model=User)
@@ -35,7 +71,7 @@ def create_user(user: UserCreate, db: Session = Depends(get_db)) -> User:
     if get_user_by_username(db, user.username):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="User with this username already exist",
+            detail="User with this username already exist.",
         )
     return add_user(db, user)
 
