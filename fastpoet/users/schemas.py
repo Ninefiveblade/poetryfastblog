@@ -1,7 +1,7 @@
 """Schemas module for users"""
 from typing import List, Union, Optional
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, EmailStr, validator, Field
 
 from fastpoet.posts.schemas import PostList
 
@@ -20,7 +20,8 @@ class UserBaseInDB(UserBase):
     """
     username: str = Field(
         max_length=15,
-        regex="^[a-zA-Z][a-zA-Z0-9-_.]{1,20}$"
+        min_length=4,
+        regex="[a-zA-Z0-9]+([_ -]?[a-zA-Z0-9])*$"
     )
     posts: List[PostList] = []
 
@@ -29,26 +30,35 @@ class UserCreate(UserBaseInDB):
     """Expand UserBaseInDB, included posts set
     and username and password.
     """
-    email: str = Field(
-        description="Введите валидный Email",
-    )
+    email: Optional[EmailStr] = None
     first_name: str = Field(
         description="Введите имя киррилицей.",
         min_length=2,
         max_length=84,
-        regex="^[\u0401\u0451\u0410-\u044f]"
+        regex="[\u0401\u0451\u0410-\u044f]"
     )
     last_name: Optional[str] = Field(
         description="Введите фамилию киррилицей.",
         min_length=2,
         max_length=96,
-        regex="^[\u0401\u0451\u0410-\u044f]"
+        regex="[\u0401\u0451\u0410-\u044f]"
     )
     born_year: Optional[int] = None  # Добавить ограничения
     password: str = Field(
-        description="Введите пароль не меньше 8 символов.",
-        regex="(?=^.{8,}$)((?=.*d)|(?=.*W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$"
+        min_length=8,
+        regex="[a-zA-Z0-9]+([_ -]?[a-zA-Z0-9])*$"
     )
+    #  user_role: Optional[UserRole]
+
+    @validator('username')
+    def username_alphanumeric(cls, var):
+        assert var.isalnum(), 'must be alphanumeric'
+        return var
+
+    @validator('password')
+    def password_alphanumeric(cls, var):
+        assert var.isalnum(), 'must be alphanumeric'
+        return var
 
 
 class UserInDB(UserBaseInDB):
@@ -82,3 +92,7 @@ class Token(BaseModel):
 class TokenData(BaseModel):
     """Create token data for current_user depends."""
     username: Union[str, None] = None
+    scopes: List[str] = []
+
+
+#  Схемы ролей и юзерролей

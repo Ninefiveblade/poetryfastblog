@@ -1,4 +1,6 @@
 """Tests for users models, endpoints."""
+from typing import Generator
+
 import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
@@ -17,7 +19,7 @@ TestingSessionLocal = sessionmaker(
 )
 
 
-def override_get_db():
+def override_get_db() -> Generator:
     try:
         db = TestingSessionLocal()
         yield db

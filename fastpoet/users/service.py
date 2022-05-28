@@ -3,8 +3,10 @@ from datetime import datetime, timedelta
 from typing import Union
 
 from fastapi import Depends, HTTPException, status
+from fastapi.security import SecurityScopes
 from jose import JWTError, jwt
 from sqlalchemy.orm import Session
+from pydantic import ValidationError
 
 from fastpoet.settings import security_config
 from .models import User
@@ -79,12 +81,20 @@ def create_access_token(
     return encoded_jwt
 
 
-def get_current_user(db: Session, token: str = Depends(oauth2_scheme)):
+# протестировать скоупы
+def get_current_user(
+    security_scopes: SecurityScopes,
+    db: Session, token: str = Depends(oauth2_scheme)
+):
     """Get user by token and check"""
+    if security_scopes.scopes:
+        authenticate_value = f'Bearer scope="{security_scopes.scope_str}"'
+    else:
+        authenticate_value = "Bearer"
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
-        headers={"WWW-Authenticate": "Bearer"},
+        headers={"WWW-Authenticate": authenticate_value},
     )
     try:
         payload = jwt.decode(
@@ -94,10 +104,13 @@ def get_current_user(db: Session, token: str = Depends(oauth2_scheme)):
         username: str = payload.get("sub")
         if username is None:
             raise credentials_exception
-        token_data = TokenData(username=username)
-    except JWTError:
+        token_scopes = payload.get("scopes", [])
+        token_data = TokenData(scopes=token_scopes, username=username)
+    except (JWTError, ValidationError):
         raise credentials_exception
     user = get_user_by_username(db, username=token_data.username)
     if user is None:
         raise credentials_exception
     return user
+
+# crud для создания ролей 
