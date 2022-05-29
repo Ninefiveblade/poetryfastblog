@@ -1,7 +1,7 @@
-"""Schemas module for users"""
-from typing import List, Union, Optional
+"""Schemas module for users."""
+from typing import List, Optional, Union
 
-from pydantic import BaseModel, EmailStr, validator, Field
+from pydantic import BaseModel, EmailStr, Field, validator
 
 from fastpoet.posts.schemas import PostList
 
@@ -71,9 +71,7 @@ class UserBase(BaseModel):
 
 
 class UserBaseInDB(UserBase):
-    """Expand UserBase, included posts set
-    and username.
-    """
+    """Expand UserBase, included posts set and username."""
     username: str = Field(
         max_length=15,
         min_length=4,
@@ -87,9 +85,7 @@ class UserBaseInDB(UserBase):
 
 
 class UserCreate(UserBaseInDB):
-    """Expand UserBaseInDB, included posts set
-    and username and password.
-    """
+    """Expand UserBaseInDB, included posts set and username and password."""
     email: Optional[EmailStr] = None
     first_name: Optional[str] = Field(
         description="Введите имя киррилицей.",
@@ -122,24 +118,25 @@ class UserCreate(UserBaseInDB):
 
 
 class UserInDB(UserBaseInDB):
-    """Expand UserBaseInDB, included posts set
-    and username and hashed_password."""
+    """
+    Expand UserBaseInDB, included posts set and username and hashed_password.
+    """
     hashed_password: str
 
 
 class User(UserBaseInDB):
-    """Expand UserBaseInDB, included posts set
-    and username and password.
-    repeats UserBaseInDB and UserBase
-    for understanding usage."""
+    """
+    Expand UserBaseInDB, included posts set and username and password.
+    Repeats UserBaseInDB and UserBase for understanding usage.
+    """
     pass
 
 
-
 class UserToken(UserBase):
-    """POST token create form.
-    expands UserBase
-    have a fields an id, username, pass."""
+    """
+    POST token create form.
+    Expands UserBase have a fields an id, username, pass.
+    """
     username: str
     password: str
 
