@@ -65,7 +65,6 @@ class UserRoleInDB(UserRoleInDBBase):
 class UserBase(BaseModel):
     """Base user pydantic model."""
     id: int = None
-    user_role: Optional[UserRole]
 
     class Config:
         orm_mode = True
@@ -80,6 +79,10 @@ class UserBaseInDB(UserBase):
         min_length=4,
         regex="[a-zA-Z0-9]+([_ -]?[a-zA-Z0-9])*$"
     )
+    first_name: Optional[str]
+    last_name: Optional[str]
+    born_year: Optional[int]
+    user_role: Optional[UserRole]
     posts: List[PostList] = []
 
 
@@ -130,6 +133,7 @@ class User(UserBaseInDB):
     repeats UserBaseInDB and UserBase
     for understanding usage."""
     pass
+
 
 
 class UserToken(UserBase):
