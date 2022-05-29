@@ -1,14 +1,15 @@
 """Dependensies and CRUD for users."""
 from datetime import datetime, timedelta
-from typing import Union, Dict, Any
+from typing import Any, Dict, Union
 
 from fastapi import Depends, HTTPException, status
 from fastapi.security import SecurityScopes
 from jose import JWTError, jwt
-from sqlalchemy.orm import Session
 from pydantic import ValidationError
+from sqlalchemy.orm import Session
 
 from fastpoet.settings import security_config
+
 from .models import User
 from .schemas import TokenData, UserCreate, UserUpdate
 from .security import get_password_hash, oauth2_scheme, verify_password
@@ -55,25 +56,24 @@ def get_users(db: Session, skip: int = 0, limit: int = 100):
 
 
 def user_update(
-        db: Session,
-        db_obj: UserUpdate,
-        obj_in: Union[UserUpdate, Dict[str, Any]],
-    ) -> User:
-        print(db_obj)
-        if isinstance(obj_in, dict):
-            update_data = obj_in
-        else:
-            update_data = obj_in.dict(exclude_unset=True)
-        if "password" in update_data:
-            hashed_password = get_password_hash(update_data["password"])
-            del update_data["password"]
-            update_data["hashed_password"] = hashed_password
-        for key, value in update_data.items():
-            setattr(db_obj, key, value)
-        db.add(db_obj)
-        db.commit()
-        db.refresh(db_obj)
-        return db_obj
+    db: Session,
+    db_obj: UserUpdate,
+    obj_in: Union[UserUpdate, Dict[str, Any]],
+) -> User:
+    if isinstance(obj_in, dict):
+        update_data = obj_in
+    else:
+        update_data = obj_in.dict(exclude_unset=True)
+    if "password" in update_data:
+        hashed_password = get_password_hash(update_data["password"])
+        del update_data["password"]
+        update_data["hashed_password"] = hashed_password
+    for key, value in update_data.items():
+        setattr(db_obj, key, value)
+    db.add(db_obj)
+    db.commit()
+    db.refresh(db_obj)
+    return db_obj
 
 
 def authenticate_user(db: Session, username: str, password: str) -> User:
@@ -135,4 +135,4 @@ def get_current_user(
         raise credentials_exception
     return user
 
-# crud для создания ролей 
+# crud для создания ролей
