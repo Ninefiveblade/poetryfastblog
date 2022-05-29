@@ -7,12 +7,13 @@ from sqlalchemy.orm import Session
 
 from fastpoet.settings import security_config
 from fastpoet.settings.database import engine, get_db
+
 from .models import User as user_model
 from .schemas import Token, User, UserCreate, UserToken
-from .service import (add_user, authenticate_user, create_access_token,
-                      get_user_by_username, get_users,
-                      destroy_user_by_username)
 from .security import oauth2_scheme
+from .service import (add_user, authenticate_user, create_access_token,
+                      destroy_user_by_username, get_user_by_username,
+                      get_users)
 
 router = APIRouter()
 
@@ -65,13 +66,15 @@ def user_destroy(
     return {"info": f"User with username: {username} has been deleted."}
 
 
-@router.post("/auth/signup/", response_model=User)
+@router.post(
+    "/auth/signup/", response_model=User, status_code=status.HTTP_201_CREATED
+)
 def create_user(user: UserCreate, db: Session = Depends(get_db)) -> User:
     """Create new user."""
     if get_user_by_username(db, user.username):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="User with this username already exist.",
+            detail=f"Пользователь с именем `{user.username}` уже существует.",
         )
     return add_user(db, user)
 
