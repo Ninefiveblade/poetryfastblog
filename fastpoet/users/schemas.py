@@ -141,6 +141,7 @@ class UserToken(UserBase):
     """
     username: str
     password: str
+    scopes: List[str] = []
 
 
 class Token(BaseModel):
