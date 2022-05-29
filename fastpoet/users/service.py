@@ -15,14 +15,10 @@ from .schemas import TokenData, UserCreate, UserUpdate
 from .security import get_password_hash, oauth2_scheme, verify_password
 
 
-def add_user(db: Session, user: UserCreate):
-    """Add new user to db"""
+def add_user(db: Session, user: UserCreate) -> User:
+    """Add new user to db."""
     db_user = User(
         username=user.username,
-        email=user.email,
-        first_name=user.first_name,
-        last_name=user.last_name,
-        born_year=user.born_year,
         hashed_password=get_password_hash(user.password),
     )
     db.add(db_user)
