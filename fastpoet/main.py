@@ -1,4 +1,4 @@
-"""Тестирование"""
+"""Приложение запуска app:main"""
 from fastapi import FastAPI
 
 from fastpoet.groups.routers import router as groups_router

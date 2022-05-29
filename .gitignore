@@ -130,5 +130,9 @@ dmypy.json
 
 .DS_Store
 db.sqlite3
+<<<<<<< HEAD
 
 .idea
+=======
+test.db
+>>>>>>> dev/auth

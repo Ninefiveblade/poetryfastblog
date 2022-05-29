@@ -2,15 +2,18 @@
 name = "fastpoet"
 version = "0.1.0"
 description = ""
-authors = ["Иван Алексеев <seevvia@gmail.com>"]
+authors = ["Иван Алексеев <seevvia@gmail.com>", "Aleksey Otto", "Lina Ruin", "Denis Shvetsov"]
 
 [tool.poetry.dependencies]
 python = "^3.9"
 SQLAlchemy = "^1.4.36"
 fastapi = "^0.75.2"
 uvicorn = "^0.17.6"
-passlib = "^1.7.4"
 python-jose = "^3.3.0"
+alembic = "^1.7.7"
+python-dotenv = "^0.20.0"
+passlib = "^1.7.4"
+pydantic = {extras = ["email"], version = "^1.9.1"}
 
 [tool.poetry.dev-dependencies]
 isort = "^5.10.1"

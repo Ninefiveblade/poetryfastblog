@@ -1,0 +1,8 @@
+Нужно реализовать csopes (роли пользователя и доступы)
+Нужно релизовать тесты
+дописать CRUD Roles, UserRoles
+Дописать эндпоинты, протестировать
+https://medium.com/mpharma-tech-blog/implementing-a-role-based-access-control-service-with-fastapi-and-postgres-3ba3709e2e1f
+https://github.com/tsatsujnr139/fastapi-role-based-access-control-auth-service/blob/master/app/api/deps.py
+https://webdevblog.ru/obyasnenie-classmethod-i-staticmethod-v-python/
+https://fastapi.tiangolo.com/ru/advanced/security/oauth2-scopes/

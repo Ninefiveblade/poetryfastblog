@@ -1,12 +1,13 @@
 """Schemas module for users"""
-from typing import List, Optional, Union
+from typing import List, Union, Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr, validator, Field
 
 from fastpoet.posts.schemas import PostList
 
 
 class UserBase(BaseModel):
+    """Base user pydantic model."""
     id: int = None
 
     class Config:
@@ -14,31 +15,84 @@ class UserBase(BaseModel):
 
 
 class UserBaseInDB(UserBase):
-    username: Optional[str] = None
+    """Expand UserBase, included posts set
+    and username.
+    """
+    username: str = Field(
+        max_length=15,
+        min_length=4,
+        regex="[a-zA-Z0-9]+([_ -]?[a-zA-Z0-9])*$"
+    )
     posts: List[PostList] = []
 
 
 class UserCreate(UserBaseInDB):
-    password: str
+    """Expand UserBaseInDB, included posts set
+    and username and password.
+    """
+    email: Optional[EmailStr] = None
+    first_name: str = Field(
+        description="Введите имя киррилицей.",
+        min_length=2,
+        max_length=84,
+        regex="[\u0401\u0451\u0410-\u044f]"
+    )
+    last_name: Optional[str] = Field(
+        description="Введите фамилию киррилицей.",
+        min_length=2,
+        max_length=96,
+        regex="[\u0401\u0451\u0410-\u044f]"
+    )
+    born_year: Optional[int] = None  # Добавить ограничения
+    password: str = Field(
+        min_length=8,
+        regex="[a-zA-Z0-9]+([_ -]?[a-zA-Z0-9])*$"
+    )
+    #  user_role: Optional[UserRole]
+
+    @validator('username')
+    def username_alphanumeric(cls, var):
+        assert var.isalnum(), 'must be alphanumeric'
+        return var
+
+    @validator('password')
+    def password_alphanumeric(cls, var):
+        assert var.isalnum(), 'must be alphanumeric'
+        return var
 
 
 class UserInDB(UserBaseInDB):
+    """Expand UserBaseInDB, included posts set
+    and username and hashed_password."""
     hashed_password: str
 
 
 class User(UserBaseInDB):
+    """Expand UserBaseInDB, included posts set
+    and username and password.
+    repeats UserBaseInDB and UserBase
+    for understanding usage."""
     pass
 
 
 class UserToken(UserBase):
+    """POST token create form.
+    expands UserBase
+    have a fields an id, username, pass."""
     username: str
     password: str
 
 
 class Token(BaseModel):
+    """Token form"""
     access_token: str
     token_type: str
 
 
 class TokenData(BaseModel):
+    """Create token data for current_user depends."""
     username: Union[str, None] = None
+    scopes: List[str] = []
+
+
+#  Схемы ролей и юзерролей

@@ -7,12 +7,12 @@ from sqlalchemy.orm import Session
 
 from fastpoet.settings import security_config
 from fastpoet.settings.database import engine, get_db
-
 from .models import User as user_model
 from .schemas import Token, User, UserCreate, UserToken
-from .security import oauth2_scheme
 from .service import (add_user, authenticate_user, create_access_token,
-                      get_user, get_user_by_username, get_users)
+                      get_user_by_username, get_users,
+                      destroy_user_by_username)
+from .security import oauth2_scheme
 
 router = APIRouter()
 
@@ -25,29 +25,58 @@ def users_get(db: Session = Depends(get_db)) -> List[User]:
     return get_users(db)
 
 
-@router.get("/users/{user_id}", response_model=User)
-def user_get(user_id: int, db: Session = Depends(get_db)) -> User:
-    """Get user by id"""
-    return get_user(db, user_id)
+@router.get("/users/{username}", response_model=User)
+def user_get(username: str, db: Session = Depends(get_db)) -> User:
+    """Get user by username"""
+    user = get_user_by_username(db, username)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="User doesn't exist",
+        )
+    return user
 
 
-@router.post("/users/", response_model=User)
+"""
+@router.patch("/users/{username}", response_model=User)
+def user_edit(
+    user: User,
+    db: Session = Depends(get_db),
+    token: str = Depends(oauth2_scheme),
+):
+    username = user.username
+    return {"info": f"User {username} has been successfully updated"}
+"""
+
+
+@router.delete("/users/{username}")
+def user_destroy(
+    username: str,
+    db: Session = Depends(get_db),
+    token: str = Depends(oauth2_scheme)
+):
+    """Delete user by username"""
+    if not get_user_by_username(db, username):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="User doesn't exist",
+        )
+    destroy_user_by_username(db, username)
+    return {"info": f"User with username: {username} has been deleted."}
+
+
+@router.post("/auth/signup/", response_model=User)
 def create_user(user: UserCreate, db: Session = Depends(get_db)) -> User:
     """Create new user."""
     if get_user_by_username(db, user.username):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="User with this username already exist",
+            detail="User with this username already exist.",
         )
     return add_user(db, user)
 
 
-@router.get("/test/")
-async def read_items(token: str = Depends(oauth2_scheme)):
-    return {"auth": "если ты видишь это, то ты залогинен!"}
-
-
-@router.post("/token/", response_model=Token)
+@router.post("/auth/token/", response_model=Token)
 def get_token_for_user(form_data: UserToken, db: Session = Depends(get_db)):
     """Получение токена"""
     user = get_user_by_username(db, form_data.username)
@@ -69,6 +98,7 @@ def get_token_for_user(form_data: UserToken, db: Session = Depends(get_db)):
     )
     # Создание токена
     access_token = create_access_token(
-        data={"sub": user.username}, expires_delta=access_token_expires
+        data={"sub": user.username, "scopes": form_data.scopes},
+        expires_delta=access_token_expires
     )
     return {"access_token": access_token, "token_type": "bearer"}
