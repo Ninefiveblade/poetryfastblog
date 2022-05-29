@@ -72,11 +72,8 @@ class UserBase(BaseModel):
 
 class UserBaseInDB(UserBase):
     """Expand UserBase, included posts set and username."""
-    username: str = Field(
-        max_length=15,
-        min_length=4,
-        regex="[a-zA-Z0-9]+([_ -]?[a-zA-Z0-9])*$"
-    )
+    username: Optional[str]
+    email: Optional[EmailStr]
     first_name: Optional[str]
     last_name: Optional[str]
     born_year: Optional[int]
@@ -86,7 +83,12 @@ class UserBaseInDB(UserBase):
 
 class UserCreate(UserBaseInDB):
     """Expand UserBaseInDB, included posts set and username and password."""
-    email: Optional[EmailStr] = None
+    username: str = Field(
+        max_length=15,
+        min_length=4,
+        regex="[a-zA-Z0-9]+([_ -]?[a-zA-Z0-9])*$"
+    )
+    email: Optional[EmailStr]
     first_name: Optional[str] = Field(
         description="Введите имя киррилицей.",
         min_length=2,
