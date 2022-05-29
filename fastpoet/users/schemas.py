@@ -6,9 +6,66 @@ from pydantic import BaseModel, EmailStr, validator, Field
 from fastpoet.posts.schemas import PostList
 
 
+class RoleBase(BaseModel):
+    name: Optional[str]
+    description: Optional[str]
+
+
+class RoleCreate(RoleBase):
+    pass
+
+
+class RoleUpdate(RoleBase):
+    pass
+
+
+class RoleInDBBase(RoleBase):
+    id: int
+
+    class Config:
+        orm_mode = True
+
+
+class Role(RoleInDBBase):
+    pass
+
+
+class RoleInDB(RoleInDBBase):
+    pass
+
+
+class UserRoleBase(BaseModel):
+    user_id: Optional[int]
+    role_id: Optional[int]
+
+
+class UserRoleCreate(UserRoleBase):
+    pass
+
+
+class UserRoleUpdate(BaseModel):
+    role_id: int
+
+
+class UserRoleInDBBase(UserRoleBase):
+    role: Role
+
+    class Config:
+        orm_mode = True
+
+
+class UserRole(UserRoleInDBBase):
+    pass
+
+
+class UserRoleInDB(UserRoleInDBBase):
+    pass
+
+
 class UserBase(BaseModel):
     """Base user pydantic model."""
     id: int = None
+    user_role: Optional[UserRole]
 
     class Config:
         orm_mode = True

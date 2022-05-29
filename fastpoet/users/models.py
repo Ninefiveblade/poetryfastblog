@@ -28,7 +28,7 @@ class UserRoles(Base):  # модель соединяющая Роли и Пол
         nullable=False,
     )
     role = relationship("Role")
-    user = relationship("User", back_populates="user_role", uselist=False)
+    user = relationship("User", back_populates="roles", uselist=False)
 
     __table_args__ = (
         UniqueConstraint("role_id", "user_id", name="unique_user_id"),
@@ -53,7 +53,7 @@ class User(Base):
         "Post", cascade="all, delete-orphan", back_populates="author"
     )
     roles = relationship(  # связь с моделью юзер ролес, недоступно множество
-        "UserRoles", back_populates="user_role", uselist=False
+        "UserRoles", back_populates="user", uselist=False
     )
 
     __table_args__ = (  # два поля не могут иметь одно и то же значение
