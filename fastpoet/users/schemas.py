@@ -5,7 +5,7 @@ from pydantic import BaseModel, EmailStr, Field, validator
 
 from fastpoet.posts.schemas import PostList
 
-
+# в стадии разработки
 class RoleBase(BaseModel):
     name: Optional[str]
     description: Optional[str]
@@ -124,6 +124,16 @@ class UserInDB(UserBaseInDB):
     Expand UserBaseInDB, included posts set and username and hashed_password.
     """
     hashed_password: str
+
+
+class UserUpdate(BaseModel):
+    username: Optional[str]
+    password: Optional[str]
+    email: Optional[EmailStr]
+    first_name: Optional[str]
+    last_name: Optional[str]
+    born_year: Optional[int]
+    user_role: Optional[str]
 
 
 class User(UserBaseInDB):

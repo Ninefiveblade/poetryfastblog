@@ -1,8 +1,8 @@
-"""Add New field
+"""Add models to DB
 
-Revision ID: 9fa95d90214e
+Revision ID: 3a0fb727fd74
 Revises: 
-Create Date: 2022-05-28 22:50:10.473492
+Create Date: 2022-05-29 16:57:35.766617
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '9fa95d90214e'
+revision = '3a0fb727fd74'
 down_revision = None
 branch_labels = None
 depends_on = None
