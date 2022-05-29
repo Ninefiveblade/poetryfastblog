@@ -85,8 +85,7 @@ def create_user(user: UserCreate, db: Session = Depends(get_db)) -> User:
 
 
 @router.post(
-    "/auth/token/", response_model=Token, status_code=status.HTTP_201_CREATED
-)
+    "/auth/token/", response_model=Token, status_code=status.HTTP_201_CREATED)
 def get_token_for_user(form_data: UserToken, db: Session = Depends(get_db)):
     """Получение токена"""
     user = get_user_by_username(db, form_data.username)

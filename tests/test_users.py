@@ -51,7 +51,7 @@ def test_crud_user(test_db):
         "/auth/signup/",
         json={"username": "testname", "password": "test1234"},
     )
-    assert response.status_code == 200, response.text
+    assert response.status_code == 201, response.text
     data = response.json()
     assert data["username"] == "testname"
     assert "id" in data
