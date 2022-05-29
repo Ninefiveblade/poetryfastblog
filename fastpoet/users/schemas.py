@@ -88,7 +88,7 @@ class UserCreate(UserBaseInDB):
     and username and password.
     """
     email: Optional[EmailStr] = None
-    first_name: str = Field(
+    first_name: Optional[str] = Field(
         description="Введите имя киррилицей.",
         min_length=2,
         max_length=84,
