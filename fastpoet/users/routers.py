@@ -9,11 +9,11 @@ from fastpoet.settings import security_config
 from fastpoet.settings.database import engine, get_db
 
 from .models import User as user_model
-from .schemas import Token, User, UserCreate, UserToken
+from .schemas import Token, User, UserCreate, UserToken, UserUpdate
 from .security import oauth2_scheme
 from .service import (add_user, authenticate_user, create_access_token,
                       destroy_user_by_username, get_user_by_username,
-                      get_users)
+                      get_users, user_update)
 
 router = APIRouter()
 
@@ -38,16 +38,21 @@ def user_get(username: str, db: Session = Depends(get_db)) -> User:
     return user
 
 
-"""
-@router.patch("/users/{username}", response_model=User)
+@router.patch("/users/{username}", response_model=UserUpdate)
 def user_edit(
-    user: User,
+    username: str,
+    user_sch: UserUpdate,
     db: Session = Depends(get_db),
     token: str = Depends(oauth2_scheme),
 ):
-    username = user.username
-    return {"info": f"User {username} has been successfully updated"}
-"""
+    user = get_user_by_username(db, username)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="User doesn't exist",
+        )
+    user = user_update(db=db, db_obj=user, obj_in=user_sch)
+    return user_sch
 
 
 @router.delete("/users/{username}")
