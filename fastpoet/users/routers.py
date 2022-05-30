@@ -59,13 +59,13 @@ def user_patch(
     return update_user(db, current_user, edit_user)
 
 
-@router.delete("/users/{username}")
+@router.delete("/users/{username}", status_code=status.HTTP_204_NO_CONTENT)
 def user_destroy(
     username: str,
     db: Session = Depends(get_db),
-    token: str = Depends(oauth2_scheme)
+    token: str = Depends(oauth2_scheme),
 ):
-    """Delete user by username"""
+    """Delete user by username."""
     if not get_user_by_username(db, username):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
