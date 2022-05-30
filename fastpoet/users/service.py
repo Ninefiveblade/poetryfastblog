@@ -11,7 +11,7 @@ from sqlalchemy.orm import Session
 from fastpoet.settings import security_config
 
 from .models import User
-from .schemas import TokenData, UserCreate, UserUpdate
+from .schemas import TokenData, UserCreate
 from .security import get_password_hash, oauth2_scheme, verify_password
 
 
@@ -51,25 +51,25 @@ def get_users(db: Session, skip: int = 0, limit: int = 100):
     return db.query(User).offset(skip).limit(limit).all()
 
 
-def user_update(
+def update_user(
     db: Session,
-    db_obj: UserUpdate,
-    obj_in: Union[UserUpdate, Dict[str, Any]],
+    current_user: User,
+    edit_user: Union[User, Dict[str, Any]],
 ) -> User:
-    if isinstance(obj_in, dict):
-        update_data = obj_in
+    if isinstance(edit_user, dict):
+        update_data = edit_user
     else:
-        update_data = obj_in.dict(exclude_unset=True)
+        update_data = edit_user.dict(exclude_unset=True)
     if "password" in update_data:
         hashed_password = get_password_hash(update_data["password"])
         del update_data["password"]
         update_data["hashed_password"] = hashed_password
     for key, value in update_data.items():
-        setattr(db_obj, key, value)
-    db.add(db_obj)
+        setattr(current_user, key, value)
+    db.add(current_user)
     db.commit()
-    db.refresh(db_obj)
-    return db_obj
+    db.refresh(current_user)
+    return current_user
 
 
 def authenticate_user(db: Session, username: str, password: str) -> User:
