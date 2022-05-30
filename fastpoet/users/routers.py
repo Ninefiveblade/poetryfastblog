@@ -1,6 +1,6 @@
 """Routing module for users"""
 from datetime import timedelta
-from typing import List
+from typing import Dict, List
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
@@ -38,7 +38,7 @@ def user_get(username: str, db: Session = Depends(get_db)) -> User:
 @router.patch(
     "/users/{username}",
     response_model=User,
-    status_code=status.HTTP_201_CREATED
+    status_code=status.HTTP_201_CREATED,
 )
 def user_patch(
     username: str,
@@ -61,7 +61,7 @@ def user_destroy(
     username: str,
     db: Session = Depends(get_db),
     token: str = Depends(oauth2_scheme),
-):
+) -> Dict:
     """Delete user by username."""
     if not get_user_by_username(db, username):
         raise HTTPException(
@@ -86,10 +86,14 @@ def create_user(user: UserCreate, db: Session = Depends(get_db)) -> User:
 
 
 @router.post(
-    "/auth/token/", response_model=Token, status_code=status.HTTP_201_CREATED)
-def get_token_for_user(form_data: UserToken, db: Session = Depends(get_db)):
+    "/auth/token/", response_model=Token, status_code=status.HTTP_201_CREATED
+)
+def get_token_for_user(
+    form_data: UserToken,
+    db: Session = Depends(get_db)
+) -> Dict:
     """Получение токена"""
-    user = get_user_by_username(db, form_data.username)
+    user: User = get_user_by_username(db, form_data.username)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
