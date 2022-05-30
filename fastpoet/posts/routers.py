@@ -7,6 +7,7 @@ from sqlalchemy.orm import Session
 from fastpoet.groups.service import get_group
 from fastpoet.posts.models import Post
 from fastpoet.settings.database import get_db
+from fastpoet.users.service import get_user
 
 from .schemas import PostCreate, PostList
 from .service import create_post, get_posts
@@ -31,5 +32,9 @@ def post_create(post: PostCreate, db: Session = Depends(get_db)) -> Post:
             raise HTTPException(
                 status_code=404,
                 detail=f"Группа под номером: {post.group_id} не существует.")
-    # Нужна проверка что переданный author_id есть в db
+    if not get_user(db, post.author_id):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Автора под номером: {post.author_id} не существует.",
+        )
     return create_post(db, post)
