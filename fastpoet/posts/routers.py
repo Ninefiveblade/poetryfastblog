@@ -11,8 +11,6 @@ from .service import create_post, get_posts
 
 router = APIRouter()
 
-Post.metadata.create_all(bind=engine)
-
 
 @router.get("/posts/", response_model=list[PostList])
 def posts_get(db: Session = Depends(get_db)):
