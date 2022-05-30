@@ -2,25 +2,24 @@ class Role:
     """
     Constants for the various roles scoped in the application ecosystem
     """
-
     GUEST = {
         "name": "GUEST",
         "description": "A Guest Account",
     }
     USER = {
-        "name": "ACCOUNT_ADMIN",
-        "description": "Primary Administrator/Superuser For an Account",
+        "name": "USER",
+        "description": "Simple User",
     }
 
     MODERATOR = {
-        "name": "ACCOUNT_MANAGER",
-        "description": "Day to Day Administrator of Events For an Account",
+        "name": "MODERATOR",
+        "description": "Moderator, partly admin",
     }
     ADMIN = {
         "name": "ADMIN",
         "description": "Admin of Application Ecosystem",
     }
     SUPER_USER = {
-        "name": "SUPER_ADMIN",
-        "description": "Super Administrator of Application Ecosystem",
+        "name": "SUPER_USER",
+        "description": "Super user of Application Ecosystem",
     }
