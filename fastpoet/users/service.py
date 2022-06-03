@@ -27,12 +27,12 @@ def add_user(db: Session, user: UserCreate) -> User:
 
 
 def get_user(db: Session, user_id: int):
-    """Grab user from db by id"""
+    """Grab user from db by id."""
     return db.query(User).filter(User.id == user_id).first()
 
 
 def get_user_by_username(db: Session, username: str):
-    """Grab user from db by username"""
+    """Grab user from db by username."""
     return db.query(User).filter(User.username == username).first()
 
 
@@ -43,7 +43,7 @@ def destroy_user_by_username(db: Session, username: str):
 
 
 def get_users(db: Session, skip: int = 0, limit: int = 100):
-    """Get users set"""
+    """Get users set."""
     return db.query(User).offset(skip).limit(limit).all()
 
 
@@ -57,7 +57,7 @@ def update_user(
     else:
         update_data = edit_user.dict(exclude_unset=True)
     if "password" in update_data:
-        hashed_password = get_password_hash(update_data["password"])
+        hashed_password: str = get_password_hash(update_data["password"])
         del update_data["password"]
         update_data["hashed_password"] = hashed_password
     for key, value in update_data.items():
@@ -96,10 +96,7 @@ def create_access_token(
 
 
 # протестировать скоупы
-def get_current_user(
-    db: Session,
-    token: str = Depends(oauth2_scheme),
-):
+def get_current_user(db: Session, token: str = Depends(oauth2_scheme)):
     """Get user by token and check"""
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
