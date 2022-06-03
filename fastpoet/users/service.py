@@ -3,7 +3,6 @@ from datetime import datetime, timedelta
 from typing import Any, Dict, Union
 
 from fastapi import Depends, HTTPException, status
-from fastapi.security import SecurityScopes
 from jose import JWTError, jwt
 from pydantic import ValidationError
 from sqlalchemy.orm import Session
@@ -98,18 +97,14 @@ def create_access_token(
 
 # протестировать скоупы
 def get_current_user(
-    security_scopes: SecurityScopes,
-    db: Session, token: str = Depends(oauth2_scheme)
+    db: Session,
+    token: str = Depends(oauth2_scheme),
 ):
     """Get user by token and check"""
-    if security_scopes.scopes:
-        authenticate_value = f'Bearer scope="{security_scopes.scope_str}"'
-    else:
-        authenticate_value = "Bearer"
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
-        headers={"WWW-Authenticate": authenticate_value},
+        headers={"WWW-Authenticate": "Bearer"},
     )
     try:
         payload = jwt.decode(
@@ -119,13 +114,10 @@ def get_current_user(
         username: str = payload.get("sub")
         if username is None:
             raise credentials_exception
-        token_scopes = payload.get("scopes", [])
-        token_data = TokenData(scopes=token_scopes, username=username)
+        token_data = TokenData(username=username)
     except (JWTError, ValidationError):
         raise credentials_exception
-    user = get_user_by_username(db, username=token_data.username)
+    user = get_user_by_username(db=db, username=token_data.username)
     if user is None:
         raise credentials_exception
     return user
-
-# crud для создания ролей

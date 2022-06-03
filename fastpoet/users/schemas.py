@@ -142,7 +142,6 @@ class UserToken(UserBase):
     """
     username: str
     password: str
-    scopes: List[str] = []
 
 
 class Token(BaseModel):
@@ -154,7 +153,6 @@ class Token(BaseModel):
 class TokenData(BaseModel):
     """Create token data for current_user depends."""
     username: Union[str, None] = None
-    scopes: List[str] = []
 
 
 #  Схемы ролей и юзерролей

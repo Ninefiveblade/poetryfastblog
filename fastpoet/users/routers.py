@@ -1,4 +1,4 @@
-"""Routing module for users"""
+"""Routing module for users."""
 from datetime import timedelta
 from typing import Dict, List
 
@@ -11,8 +11,8 @@ from fastpoet.settings.database import get_db
 from .schemas import Token, User, UserCreate, UserToken
 from .security import oauth2_scheme
 from .service import (add_user, authenticate_user, create_access_token,
-                      destroy_user_by_username, get_user_by_username,
-                      get_users, update_user)
+                      destroy_user_by_username, get_current_user,
+                      get_user_by_username, get_users, update_user)
 
 router = APIRouter()
 
@@ -36,18 +36,17 @@ def user_get(username: str, db: Session = Depends(get_db)) -> User:
 
 
 @router.patch(
-    "/users/{username}",
+    "/users/me/",
     response_model=User,
     status_code=status.HTTP_201_CREATED,
 )
 def user_patch(
-    username: str,
     edit_user: User,
     db: Session = Depends(get_db),
     token: str = Depends(oauth2_scheme),
 ) -> User:
     """Update detail user."""
-    current_user: User = get_user_by_username(db, username)
+    current_user: User = get_current_user(db, token)
     if not current_user:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -56,20 +55,20 @@ def user_patch(
     return update_user(db, current_user, edit_user)
 
 
-@router.delete("/users/{username}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/users/me/", status_code=status.HTTP_200_OK)
 def user_destroy(
-    username: str,
     db: Session = Depends(get_db),
     token: str = Depends(oauth2_scheme),
 ) -> Dict:
     """Delete user by username."""
-    if not get_user_by_username(db, username):
+    current_user: User = get_current_user(db, token)
+    if not current_user:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="User doesn't exist",
         )
-    destroy_user_by_username(db, username)
-    return {"info": f"User with username: {username} has been deleted."}
+    destroy_user_by_username(db, current_user.username)
+    return {"info": " Your has been deleted."}
 
 
 @router.post(
@@ -112,7 +111,7 @@ def get_token_for_user(
     )
     # Создание токена
     access_token = create_access_token(
-        data={"sub": user.username, "scopes": form_data.scopes},
+        data={"sub": user.username},
         expires_delta=access_token_expires
     )
     return {"access_token": access_token, "token_type": "bearer"}
