@@ -35,6 +35,20 @@ def user_get(username: str, db: Session = Depends(get_db)) -> User:
     return user
 
 
+@router.get("/users/me/", response_model=User, status_code=status.HTTP_200_OK)
+def get_detail_user(
+    db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)
+) -> User:
+    """Get detail user."""
+    user: User = get_current_user(db, token)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="User doesn't exist",
+        )
+    return user
+
+
 @router.patch(
     "/users/me/", response_model=User, status_code=status.HTTP_201_CREATED,
 )
