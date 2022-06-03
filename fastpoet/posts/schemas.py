@@ -1,9 +1,12 @@
 """Schemas module for posts"""
+from typing import Optional
+
 from pydantic import BaseModel
 
 
 class PostBase(BaseModel):
     id: int = None
+    author_id: Optional[int]
 
     class Config:
         orm_mode = True
@@ -12,7 +15,6 @@ class PostBase(BaseModel):
 class PostCreate(PostBase):
     title: str
     text: str
-    author_id: int
     group_id: int = None
 
 
