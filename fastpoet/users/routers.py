@@ -19,13 +19,13 @@ router = APIRouter()
 
 @router.get("/users/", response_model=List[User])
 def users_get(db: Session = Depends(get_db)) -> List[User]:
-    """Get users"""
+    """Get users."""
     return get_users(db)
 
 
 @router.get("/users/{username}", response_model=User)
 def user_get(username: str, db: Session = Depends(get_db)) -> User:
-    """Get user by username"""
+    """Get user by username."""
     user = get_user_by_username(db, username)
     if not user:
         raise HTTPException(
@@ -36,9 +36,7 @@ def user_get(username: str, db: Session = Depends(get_db)) -> User:
 
 
 @router.patch(
-    "/users/me/",
-    response_model=User,
-    status_code=status.HTTP_201_CREATED,
+    "/users/me/", response_model=User, status_code=status.HTTP_201_CREATED,
 )
 def user_patch(
     edit_user: User,
@@ -57,10 +55,9 @@ def user_patch(
 
 @router.delete("/users/me/", status_code=status.HTTP_200_OK)
 def user_destroy(
-    db: Session = Depends(get_db),
-    token: str = Depends(oauth2_scheme),
+    db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)
 ) -> Dict:
-    """Delete user by username."""
+    """Delete user."""
     current_user: User = get_current_user(db, token)
     if not current_user:
         raise HTTPException(
@@ -88,10 +85,9 @@ def create_user(user: UserCreate, db: Session = Depends(get_db)) -> User:
     "/auth/token/", response_model=Token, status_code=status.HTTP_201_CREATED
 )
 def get_token_for_user(
-    form_data: UserToken,
-    db: Session = Depends(get_db)
+    form_data: UserToken, db: Session = Depends(get_db)
 ) -> Dict:
-    """Получение токена"""
+    """Get token."""
     user: User = get_user_by_username(db, form_data.username)
     if not user:
         raise HTTPException(
@@ -111,7 +107,6 @@ def get_token_for_user(
     )
     # Создание токена
     access_token = create_access_token(
-        data={"sub": user.username},
-        expires_delta=access_token_expires
+        data={"sub": user.username}, expires_delta=access_token_expires
     )
     return {"access_token": access_token, "token_type": "bearer"}
