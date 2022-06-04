@@ -20,7 +20,10 @@ class User(Base):
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
     born_year = Column(Integer, index=True, nullable=True)
     hashed_password = Column(String)
-    active = Column(Boolean, default=False)
+    is_active = Column(Boolean, default=False)
+    is_superuser = Column(Boolean, default=False)
+    is_admin = Column(Boolean, default=True)
+    is_user = Column(Boolean, default=False)
     posts = relationship(
         "Post", cascade="all, delete-orphan", back_populates="author"
     )
@@ -28,8 +31,3 @@ class User(Base):
     __table_args__ = (
         UniqueConstraint("username", "first_name", name="unique_username"),
     )
-
-    # под вопросом, может пригодиться при проерке
-    @property
-    def is_active(self):
-        return self.active

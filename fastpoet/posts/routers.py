@@ -7,9 +7,9 @@ from sqlalchemy.orm import Session
 from fastpoet.groups.service import get_group
 from fastpoet.posts.models import Post
 from fastpoet.settings.database import get_db
-from fastpoet.users.schemas import User
+from fastpoet.users.schemas.user_schema import User
 from fastpoet.users.security import oauth2_scheme
-from fastpoet.users.service import get_current_user
+from fastpoet.users.security import get_current_user
 
 from .schemas import PostCreate, PostList
 from .service import create_post, get_posts
