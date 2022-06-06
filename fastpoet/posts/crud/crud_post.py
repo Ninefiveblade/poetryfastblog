@@ -1,8 +1,8 @@
 """CRUD module for posts"""
 from sqlalchemy.orm import Session
 
-from .models import Post
-from .schemas import PostCreate
+from fastpoet.posts.models import Post
+from fastpoet.posts.schemas import PostCreate
 
 
 def get_posts(db: Session):
