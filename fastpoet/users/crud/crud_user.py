@@ -3,9 +3,9 @@ from typing import Any, Dict, Union
 
 from sqlalchemy.orm import Session
 
+from fastpoet.users import security
 from fastpoet.users.models import User
 from fastpoet.users.schemas.user_schema import UserCreate
-from fastpoet.users import security
 
 
 def add_user(db: Session, user: UserCreate) -> User:

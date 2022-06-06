@@ -5,12 +5,10 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from fastpoet.settings.database import get_db
-
-from fastpoet.users.schemas.user_schema import User
-from fastpoet.users.security import oauth2_scheme
 from fastpoet.users.crud import crud_user
-from fastpoet.users.security import get_current_user
 from fastpoet.users.decorators import is_user_admin
+from fastpoet.users.schemas.user_schema import User
+from fastpoet.users.security import get_current_user, oauth2_scheme
 
 router = APIRouter()
 

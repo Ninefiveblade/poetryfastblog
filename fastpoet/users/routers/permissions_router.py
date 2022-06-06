@@ -1,17 +1,15 @@
-from typing import Dict
 from datetime import timedelta
+from typing import Dict
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
-from fastpoet.settings.database import get_db
-
 from fastpoet.settings import security_config
-from fastpoet.users.schemas import user_schema, token_schema
+from fastpoet.settings.database import get_db
+from fastpoet.users.crud.crud_authentication import (authenticate_user,
+                                                     create_access_token)
 from fastpoet.users.crud.crud_user import add_user, get_user_by_username
-from fastpoet.users.crud.crud_authentication import (
-    authenticate_user, create_access_token
-)
+from fastpoet.users.schemas import token_schema, user_schema
 
 router = APIRouter()
 

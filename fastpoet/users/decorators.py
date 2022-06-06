@@ -1,5 +1,7 @@
 from functools import wraps
+
 from fastapi import HTTPException, status
+
 from fastpoet.users.security import get_current_user
 
 

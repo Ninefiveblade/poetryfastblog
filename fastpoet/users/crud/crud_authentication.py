@@ -6,10 +6,9 @@ from jose import jwt
 from sqlalchemy.orm import Session
 
 from fastpoet.settings import security_config
-
+from fastpoet.users.crud import crud_user
 from fastpoet.users.models import User
 from fastpoet.users.security import verify_password
-from fastpoet.users.crud import crud_user
 
 
 def authenticate_user(db: Session, username: str, password: str) -> User:
