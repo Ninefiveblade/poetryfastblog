@@ -1,3 +1,4 @@
+"""Decorators for users."""
 from functools import wraps
 
 from fastapi import HTTPException, status
@@ -6,6 +7,7 @@ from fastpoet.users.security import get_current_user
 
 
 def is_user_admin(func):
+    """Decorator func. for check permissions."""
     @wraps(func)
     def wrapper(**kwargs):
         user = get_current_user(kwargs.get("db"), kwargs.get("token"))

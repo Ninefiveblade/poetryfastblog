@@ -1,3 +1,4 @@
+"""Users schemas for users module."""
 from typing import List, Optional
 
 from pydantic import BaseModel, EmailStr, Field, validator

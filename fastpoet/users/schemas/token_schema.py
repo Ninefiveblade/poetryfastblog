@@ -1,3 +1,4 @@
+"""Token schemas for users module."""
 from typing import Union
 
 from pydantic import BaseModel
