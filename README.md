@@ -32,4 +32,5 @@ $ poetry run uvicorn fastpoet.main:app --reload
 http://127.0.0.1:8000/redoc/
 ```
 License
+
 [LICENSE MIT](LICENSE)
