@@ -8,11 +8,12 @@ from fastpoet.users.routers import (
     permissions_router,
     users_router
 )
+from fastpoet.users.authentication import middleware
 
 
 def create_app():
     """Application Initialization"""
-    app = FastAPI()
+    app = FastAPI(middleware=middleware)
     app.include_router(posts_router)
     app.include_router(users_router.router)
     app.include_router(permissions_router.router)

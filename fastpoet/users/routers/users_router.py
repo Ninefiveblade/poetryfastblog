@@ -1,7 +1,7 @@
 """Routing module for users."""
 from typing import Dict, List
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Request
 from sqlalchemy.orm import Session
 
 from fastpoet.settings.database import get_db
@@ -118,3 +118,9 @@ def user_destroy(
         )
     crud_user.destroy_user_by_username(db, current_user.username)
     return {"info": f"{current_user.username} has been deleted."}
+
+
+@router.get("/some/")
+def test_get(request: Request):
+    print(request.user)
+    return {"info": "username"}
