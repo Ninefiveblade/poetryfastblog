@@ -1,13 +1,13 @@
 from starlette.authentication import (
-    AuthCredentials, AuthenticationBackend, AuthenticationError
+    AuthCredentials, AuthenticationBackend, AuthenticationError, SimpleUser
 )
 from fastapi.middleware import Middleware
 from starlette.middleware.authentication import AuthenticationMiddleware
-import base64
-import binascii
+from jose import jwt
+from jose.exceptions import ExpiredSignatureError
 
+from fastpoet.settings import security_config
 from fastpoet.users.models import User
-
 
 class BasicAuthBackend(AuthenticationBackend):
     async def authenticate(self, conn):
@@ -17,16 +17,14 @@ class BasicAuthBackend(AuthenticationBackend):
         auth = conn.headers["Authorization"]
         try:
             scheme, credentials = auth.split()
-            # переносы от бога
             if scheme.lower() != 'basic':
-                return
-            decoded = base64.b64decode(credentials).decode("ascii")  # разобрать код
-        except (ValueError, UnicodeDecodeError, binascii.Error):
-            raise AuthenticationError('Invalid basic auth credentials')
-
-        username, _, password = decoded.partition(":")  # разобрать код
-        # TODO: осуществить проверку имени и пароля
-        return AuthCredentials(["authenticated"]), User(username)
+                payload = jwt.decode(
+                    credentials, security_config.SECRET_KEY,
+                    algorithms=[security_config.ALGORITHM]
+                )
+                return AuthCredentials(["authenticated"]), User(username=payload.get("sub"))
+        except (ValueError, UnicodeDecodeError, ExpiredSignatureError):
+            raise AuthenticationError('Invalid basic auth credentials or token expired')
 
 
 middleware = [

@@ -122,5 +122,5 @@ def user_destroy(
 
 @router.get("/some/")
 def test_get(request: Request):
-    print(request.user)
+    print(request.user.email)
     return {"info": "username"}
