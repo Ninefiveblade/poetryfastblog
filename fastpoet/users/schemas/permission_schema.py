@@ -8,7 +8,7 @@ class Permissions(BaseModel):
     username: str
     is_admin: Optional[bool]
     is_user: Optional[bool]
-    is_active: Optional[bool]
+    is_authentificated: Optional[bool]
 
     class Config:
         orm_mode = True

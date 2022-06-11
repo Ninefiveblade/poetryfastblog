@@ -20,7 +20,7 @@ class User(Base):
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
     born_year = Column(Integer, index=True, nullable=True)
     hashed_password = Column(String)
-    is_active = Column(Boolean, default=False)
+    is_authenticated = Column(Boolean, default=False)
     is_superuser = Column(Boolean, default=False)
     is_admin = Column(Boolean, default=True)
     is_user = Column(Boolean, default=False)
