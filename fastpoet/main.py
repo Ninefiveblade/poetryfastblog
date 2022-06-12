@@ -68,8 +68,8 @@ class PostAdmin(AuthModelAdmin, model=Post):
         Post.id,
         Post.title,
         Post.text,
-        Post.author,
-        Post.group,
+        Post.author_id,
+        Post.group_id,
     )
 
 
