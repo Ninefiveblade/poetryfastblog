@@ -55,7 +55,7 @@ class GroupAdmin(AuthModelAdmin, model=Group):
     """Admin group elements."""
     name = "Группа"
     name_plural = "Группы"
-    column_list = [Group.id, Group.title, Group.slug, Group.description]
+    column_list = (Group.id, Group.title, Group.slug, Group.description)
 
 
 class PostAdmin(AuthModelAdmin, model=Post):
@@ -64,13 +64,13 @@ class PostAdmin(AuthModelAdmin, model=Post):
     name_plural = "Посты"
     page_size = 10
     page_size_options = [25, 50, 100, 200]
-    column_list = [
+    column_list = (
         Post.id,
         Post.title,
         Post.text,
         Post.author,
         Post.group,
-    ]
+    )
 
 
 class UserAdmin(AuthModelAdmin, model=User):
@@ -79,7 +79,7 @@ class UserAdmin(AuthModelAdmin, model=User):
     name_plural = "Пользователи"
     page_size = 10
     page_size_options = [25, 50, 100, 200]
-    column_list = [
+    column_list = (
         User.id,
         User.username,
         User.email,
@@ -89,7 +89,7 @@ class UserAdmin(AuthModelAdmin, model=User):
         User.is_admin,
         User.is_superuser,
         User.is_user
-    ]
+    )
 
 
 admin.register_model(UserAdmin)
