@@ -32,7 +32,7 @@ def test_get_user(test_db):
     assert response.status_code == HTTPStatus.OK, response.text
     assert response.json().get("username") == "testname"
     assert response.json().get("id") == user_id
-    assert not response.json()["posts"]
+    assert not response.json().get("posts")
 
 
 def test_get_token(test_db):
