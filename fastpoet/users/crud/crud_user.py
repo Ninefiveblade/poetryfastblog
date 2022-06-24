@@ -1,5 +1,5 @@
 """Dependensies and CRUD for users."""
-from typing import Any, Dict, Union
+from typing import Any, Dict, List, Optional, Union
 
 from sqlalchemy.orm import Session
 
@@ -20,23 +20,23 @@ def add_user(db: Session, user: UserCreate) -> User:
     return db_user
 
 
-def get_user(db: Session, user_id: int):
+def get_user(db: Session, user_id: int) -> Optional[User]:
     """Grab user from db by id."""
     return db.query(User).filter(User.id == user_id).first()
 
 
-def get_user_by_username(db: Session, username: str):
+def get_user_by_username(db: Session, username: str) -> Optional[User]:
     """Grab user from db by username."""
     return db.query(User).filter(User.username == username).first()
 
 
-def destroy_user_by_username(db: Session, username: str):
+def destroy_user_by_username(db: Session, username: str) -> None:
     """Delete user."""
     db.query(User).filter(User.username == username).delete()
     db.commit()
 
 
-def get_users(db: Session, skip: int = 0, limit: int = 100):
+def get_users(db: Session, skip: int = 0, limit: int = 100) -> List[User]:
     """Get users set."""
     return db.query(User).offset(skip).limit(limit).all()
 
