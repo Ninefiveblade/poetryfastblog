@@ -39,5 +39,12 @@ def test_get_user_by_username(test_db, user_fixture):
     assert not response.json().get("posts")
 
 
+def test_delete_user_by_username(test_db, user_fixture):
+    username = user_fixture.json().get("username")
+    response = client.delete(f"/users/{username}")
+    assert response.status_code == HTTPStatus.UNAUTHORIZED, response.text
+    assert response.json().get("username") != username
+
+
 def test_get_token(test_db):
     pass
