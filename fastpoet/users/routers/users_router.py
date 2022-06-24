@@ -120,7 +120,7 @@ def user_destroy(
     return {"info": f"{current_user.username} has been deleted."}
 
 
-@router.get("/some/")
+@router.get("/verify_token/")
 def test_get(request: Request):
     print(request.user.email)
     return {"info": "username"}

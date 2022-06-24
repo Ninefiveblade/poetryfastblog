@@ -29,8 +29,9 @@ class BasicAuthBackend(AuthenticationBackend):
                     credentials, security_config.SECRET_KEY,
                     algorithms=[security_config.ALGORITHM]
                 )
-                return AuthCredentials(
-                    ["authenticated"],
+                print(User(username=payload.get("sub")))
+                return (
+                    AuthCredentials(["authenticated"]),
                     User(username=payload.get("sub"))
                 )
         except (ValueError, UnicodeDecodeError, ExpiredSignatureError):
